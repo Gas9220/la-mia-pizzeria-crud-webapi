@@ -35,5 +35,26 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 
             return Ok(foundedPizzas);
         }
+
+        [HttpGet("byId")]
+        public IActionResult GetPizzasById(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest(new { Message = "Invalid id" });
+            } else
+            {
+
+            Pizza? foundedPizza = _myDatabase.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
+
+                if (foundedPizza != null && _myDatabase.Pizzas.Contains(foundedPizza))
+                {
+                    return Ok(foundedPizza);
+                } else
+                {
+                    return BadRequest(new { Message = $"No pizzas with id: {id}" });
+                }
+            }
+        }
     }
 }
