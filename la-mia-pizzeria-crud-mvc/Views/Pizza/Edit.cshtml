@@ -1,0 +1,9 @@
+﻿@model PizzaFormModel
+
+<div class="container">
+    <h2>Edit pizza details</h2>
+    <form asp-controller="Pizza" asp-action="Edit" asp-route-id="@Model.Pizza.Id" method="post">
+        @Html.AntiForgeryToken()
+        <partial name="../Shared/_AddEditFormFields.cshtml" />
+    </form>
+</div>

@@ -1,0 +1,23 @@
+﻿@{
+    string GetHeaderColor()
+    {
+        var routeUrl = Url.RouteUrl(ViewContext.RouteData.Values);
+        var qsPath = ViewContext.HttpContext.Request.QueryString.Value;
+        var returnUrl = $"{routeUrl}{qsPath}";
+        //Console.WriteLine(returnUrl);
+
+        if (returnUrl == "/" || returnUrl.Contains("Pizza"))
+        {
+            return "bg-secondary";
+        }
+
+        return "bg-danger";
+    }
+}
+
+<footer class="@GetHeaderColor() rounded-bottom mt-auto">
+    <div class="container-fluid text-white d-flex justify-content-between">
+        <span class="py-4 d-block">&copy; 2023 - Best Pizza </span>
+        <span class="py-4 d-block">Email: best@pizza.com Tel: +33 33333333</span>
+    </div>
+</footer>

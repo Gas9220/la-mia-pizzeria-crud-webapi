@@ -1,0 +1,44 @@
+﻿@{
+    string GetHeaderColor()
+    {
+        var routeUrl = Url.RouteUrl(ViewContext.RouteData.Values);
+        var qsPath = ViewContext.HttpContext.Request.QueryString.Value;
+        var returnUrl = $"{routeUrl}{qsPath}";
+        //Console.WriteLine(returnUrl);
+
+        if (returnUrl == "/" || returnUrl.Contains("Pizza"))
+        {
+            return "bg-secondary";
+        }
+
+        return "bg-danger";
+    }
+}
+
+<header>
+    <nav class="@GetHeaderColor() navbar">
+        <div class="container-fluid">
+            <a class="navbar-brand text-white" href="#">
+                <img src="https://previews.123rf.com/images/simmmax/simmmax1510/simmmax151000004/46552202-pizza-delivery-logo-fast-delivery-logo-pizza-logo.jpg" alt="Logo" width="35" height="35" class="d-inline-block rounded-circle">
+                Best Pizza
+            </a>
+            <ul class="navbar-bar d-flex ms-auto mb-1 list-unstyled">
+                <partial name="_LoginPartial" />
+
+                @if (User.Identity.IsAuthenticated && User.IsInRole("ADMIN"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Pizza")">
+                            <span>Admin</span>
+                        </a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="nav-link text-white" href="@Url.Action("Index", "Home")">
+                            <span>User</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </nav>
+</header>

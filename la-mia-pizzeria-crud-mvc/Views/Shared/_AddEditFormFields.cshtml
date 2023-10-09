@@ -1,0 +1,54 @@
+﻿@model PizzaFormModel
+
+<div class="mb-3">
+    <strong>Name:</strong>
+    <input asp-for="Pizza.Name" class="d-block w-100" type="text" />
+    <span asp-validation-for="Pizza.Name" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <strong>Description:</strong>
+    <input asp-for="Pizza.Description" class="d-block w-100" type="text" />
+    <span asp-validation-for="Pizza.Description" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <strong>Photo:</strong>
+    <input asp-for="Pizza.PhotoUrl" class="d-block w-100" type="url" />
+    <span asp-validation-for="Pizza.PhotoUrl" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <strong>Price:</strong>
+    <input asp-for="Pizza.Price" class="d-block w-100" type="text" />
+    <span asp-validation-for="Pizza.Price" class="text-danger"></span>
+</div>
+@if (Model.Categories != null && Model.Categories.Count > 0)
+{
+    <div class="d-flex align-items-center mb-3">
+        <strong>Category:</strong>
+        <select class="form-select ms-2" aria-label="Default select example" asp-for="Pizza.CategoryId">
+            <option selected>Select a category...</option>
+            @foreach (var category in Model.Categories)
+            {
+                @if (Model.Pizza.CategoryId == category.Id)
+                {
+                    <option value="@category.Id" selected>@category.Name</option>
+                }
+                else
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </select>
+    </div>
+}
+@if (Model.Ingredients != null && Model.Ingredients.Count > 0)
+{
+    <div class="d-flex align-items-center mb-3">
+        <strong>Ingredients:</strong>
+        <select asp-for="SelectedIngredientsId" multiple="multiple" size="10" class="form-control ms-2" asp-items="@Model.Ingredients">
+        </select>
+    </div>
+}
+<div class="text-end">
+    <input type="submit" class="btn btn-small btn-secondary" value="Save">
+</div>
+

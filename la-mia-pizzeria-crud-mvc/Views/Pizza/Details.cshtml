@@ -1,0 +1,59 @@
+﻿@model Pizza
+
+@{
+    string GetIngredientsListName(List<Ingredient> ingredients)
+    {
+        var listOfStrings = new List<string>();
+
+        foreach(var ingredient in ingredients)
+        {
+            listOfStrings.Add(ingredient.Name);
+        }
+
+        return String.Join(", ", listOfStrings);
+    }
+}
+
+<div class="d-flex pt-2 align-items-center justify-content-between">
+    <a class="btn btn-secondary btn-sm me-2" href="@Url.Action("Index")">
+        Back
+    </a>
+    <h3>Dettaglio pizza</h3>
+    <div class="d-flex">
+        <a class="btn btn-secondary btn-sm me-2" href="@Url.Action("Edit", new { id = @Model.Id })">
+            Edit
+        </a>
+        <form asp-controller="Pizza" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-danger btn-sm me-2">Delete</button>
+        </form>
+    </div>
+</div>
+<div class="container py-2">
+    <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <img class="detail-img" src="@Model.PhotoUrl" />
+            <div class="ms-5">
+                <h6>ID: @Model.Id</h6>
+                <h6>Name: @Model.Name</h6>
+                @if (Model.Category != null)
+                {
+                    <h6>Category: @Model.Category.Name</h6>
+                } else
+                {
+                    <h6>Category: "Not Specified"</h6>
+                }
+
+                @if (Model.Ingredients != null && Model.Ingredients.Count > 0)
+                {
+                    <h6>Ingredients: @GetIngredientsListName(Model.Ingredients.ToList())</h6>
+                }
+                else
+                {
+                    <h6>Ingredients: "Not Specified"</h6>
+                }
+                <p class="mb-1">Description: @Model.Description</p>
+                <span>Price: @Model.Price €</span>
+            </div>
+        </div>
+    </div>
+</div>

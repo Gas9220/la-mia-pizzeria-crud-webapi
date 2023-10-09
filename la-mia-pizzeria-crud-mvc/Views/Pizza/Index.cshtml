@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Admin Page";
+    Layout = "_Layout";
+}
+
+@model List<Pizza>
+
+@if (Model.Count() == 0)
+{
+    <h3>
+        The pizzas you add will be shown here.
+    </h3>
+}
+else
+{
+    <a class="btn btn-secondary btn-sm text-end my-2" href="@Url.Action("Create", "Pizza")">
+        Create new pizza
+    </a>
+
+    <table class="table">
+        <thead>
+            <tr class="text-center">
+                <th scope="col">ID</th>
+                <th scope="col">Photo</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Price</th>
+                <th scope="col">Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pizza in Model)
+            {
+                <tr class="text-center align-middle">
+                    <th scope="row" class="text-center">@pizza.Id</th>
+                    <td>
+                        <img class="align-self-center" style="width: 60px; height:60px" src="@pizza.PhotoUrl" />
+                    </td>
+                    <td>@pizza.Name</td>
+                    <td>@pizza.Description</td>
+                    <td>@pizza.Price €</td>
+                    <td>
+                        <a class="btn btn-secondary btn-sm" href="@Url.Action("Details", "Pizza", new { id = pizza.Id })">
+                            Details >
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

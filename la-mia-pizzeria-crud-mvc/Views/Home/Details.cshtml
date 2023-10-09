@@ -1,0 +1,21 @@
+﻿@model Pizza
+
+<div class="d-flex pt-2 align-items-center">
+    <a class="btn btn-danger btn-sm me-2" href="@Url.Action("Index")">
+        Back
+    </a>
+    <h3>Dettaglio pizza</h3>
+</div>
+<div class="container py-2">
+    <div class="row">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <img class="detail-img" src="@Model.PhotoUrl" />
+            <div class="ms-5">
+                <h6>ID: @Model.Id</h6>
+                <h6>Name: @Model.Name</h6>
+                <p class="mb-1">Description: @Model.Description</p>
+                <span>Price: @Model.Price €</span>
+            </div>
+        </div>
+    </div>
+</div>
