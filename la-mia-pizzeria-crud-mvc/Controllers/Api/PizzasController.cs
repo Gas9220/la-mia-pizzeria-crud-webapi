@@ -117,6 +117,22 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 return BadRequest("Unable to update this pizza");
             }
         }
+
+        [HttpDelete("delete/{id}")]
+        public IActionResult DeletePizza(int id)
+        {
+            Pizza? pizzaToDelete = _myDatabase.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
+
+            if (pizzaToDelete == null)
+            {
+                return BadRequest(new { Message = "Unable to delete this pizza" });
+            }
+
+            _myDatabase.Pizzas.Remove(pizzaToDelete);
+            _myDatabase.SaveChanges();
+
+            return Ok("Pizza deleted");
+        }
     }
 }
 
