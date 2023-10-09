@@ -2,6 +2,7 @@
 using la_mia_pizzeria_crud_mvc.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace la_mia_pizzeria_crud_mvc.Controllers.Api
 {
@@ -42,15 +43,17 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             if (id == null)
             {
                 return BadRequest(new { Message = "Invalid id" });
-            } else
+            }
+            else
             {
 
-            Pizza? foundedPizza = _myDatabase.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
+                Pizza? foundedPizza = _myDatabase.Pizzas.Where(pizza => pizza.Id == id).FirstOrDefault();
 
                 if (foundedPizza != null && _myDatabase.Pizzas.Contains(foundedPizza))
                 {
                     return Ok(foundedPizza);
-                } else
+                }
+                else
                 {
                     return BadRequest(new { Message = $"No pizzas with id: {id}" });
                 }
@@ -58,7 +61,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         }
 
         [HttpPost("create")]
-        public IActionResult Create(Pizza newPizza)
+        public IActionResult CreatePizza(Pizza newPizza)
         {
             try
             {
@@ -70,6 +73,48 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
             catch
             {
                 return BadRequest("Unable to add this pizza");
+            }
+        }
+
+        [HttpPut("update/{id}")]
+        public IActionResult UpdatePizza(int id, Pizza updatedPizzaData)
+        {
+            Pizza? pizzaToUpdate = _myDatabase.Pizzas.Where(pizza => pizza.Id == id).Include(pizza => pizza.Ingredients).FirstOrDefault();
+
+            if (pizzaToUpdate != null)
+            {
+
+                pizzaToUpdate.Name = updatedPizzaData.Name;
+                pizzaToUpdate.Description = updatedPizzaData.Description;
+                pizzaToUpdate.PhotoUrl = updatedPizzaData.PhotoUrl;
+                pizzaToUpdate.Price = updatedPizzaData.Price;
+                pizzaToUpdate.CategoryId = updatedPizzaData.CategoryId;
+
+
+                if (updatedPizzaData.Ingredients != null)
+                {
+                    if (pizzaToUpdate.Ingredients != null)
+                    {
+                        pizzaToUpdate.Ingredients.Clear();
+                    }
+                    else
+                    {
+                        pizzaToUpdate.Ingredients = new List<Ingredient>();
+                    }
+
+                    foreach(Ingredient ingredient in updatedPizzaData.Ingredients)
+                    {
+                        pizzaToUpdate.Ingredients.Add(ingredient);
+                    }
+                }
+
+                _myDatabase.SaveChanges();
+
+                return Ok("Success");
+            }
+            else
+            {
+                return BadRequest("Unable to update this pizza");
             }
         }
     }
