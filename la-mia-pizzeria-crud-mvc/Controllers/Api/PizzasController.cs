@@ -56,5 +56,23 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                 }
             }
         }
+
+        [HttpPost("create")]
+        public IActionResult Create(Pizza newPizza)
+        {
+            try
+            {
+                _myDatabase.Pizzas.Add(newPizza);
+                _myDatabase.SaveChanges();
+
+                return Ok("Success");
+            }
+            catch
+            {
+                return BadRequest("Unable to add this pizza");
+            }
+        }
     }
 }
+
+
