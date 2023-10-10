@@ -5,7 +5,7 @@
 
 <div class="d-flex justify-content-between align-items-center mb-2">
     <h1>Choose a pizza</h1>
-    <a href="#" class="btn btn-danger" id="new-pizza-btn">Create new pizza</a>
+    <button type="button" class="btn btn-danger" id="new-pizza-btn">Create new pizza</button>
 </div>
 <div class="input-group mb-3">
     <input type="text" class="form-control" placeholder="Search for a pizza.." id="pizza-input">
@@ -43,10 +43,19 @@
                     });
 
                     let deleteBtns = document.querySelectorAll(".delete-btn");
+                    let updateBtns = document.querySelectorAll(".update-btn");
+
                     for (var i = 0; i < deleteBtns.length; i++) {
                         let id = deleteBtns[i].id;
                         deleteBtns[i].addEventListener('click', function () {
                             deletePizza(id);
+                        })
+                    }
+
+                    for (var i = 0; i < updateBtns.length; i++) {
+                        let id = updateBtns[i].id;
+                        updateBtns[i].addEventListener('click', function () {
+                            updatePizza(id);
                         })
                     }
                 });
@@ -74,16 +83,21 @@
                     });
                 }
 
-                console.log(deleteBtns);
                 let deleteBtns = document.querySelectorAll(".delete-btn");
+                let updateBtns = document.querySelectorAll(".update-btn");
 
                 for (var i = 0; i < deleteBtns.length; i++) {
-                    console.log("Eseguito")
+                    let id = deleteBtns[i].id;
+                    deleteBtns[i].addEventListener('click', function () {
+                        deletePizza(id);
+                    })
+                }
 
-                    deleteBtns[i].addEventListener("click", function () {
-                        console.log(deleteBtns[i])
-                        deletePizza(deleteBtns[i].id)
-                    });
+                for (var i = 0; i < updateBtns.length; i++) {
+                    let id = updateBtns[i].id;
+                    updateBtns[i].addEventListener('click', function () {
+                        updatePizza(id);
+                    })
                 }
             });
         }
@@ -91,18 +105,21 @@
         function reloadInterface(pizza) {
             pizzasContainer.innerHTML +=
                 `
-                                                                                                                                        <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
-                                                                                                                                           <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
-                                                                                                                                             <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
-                                                                                                                                             <div class="card-body">
-                                                                                                                                                <h5 class="card-title" > ${pizza.name}</h5>
-                                                                                                                                                 <p class="card-text" > ${pizza.description}</p>
-                                                                                                                                                 <a href = "#" class="btn btn-danger"> Buy for ${pizza.price}€</a>
-                                                                                                                                                 <button type="button" class="btn btn-danger delete-btn" id="${pizza.id}">Delete Pizza</button>
-                                                                                                                                             </div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                         `
+                                                                                                                                                        <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
+                                                                                                                                                           <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
+                                                                                                                                                             <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
+                                                                                                                                                             <div class="card-body">
+                                                                                                                                                                <h5 class="card-title" > ${pizza.name}</h5>
+                                                                                                                                                                 <p class="card-text" > ${pizza.description}</p>
+                                                                                                                                                                 <div class="container align-items-center justify-content-between d-flex flex-column">
+                                                                                                                                                                         <button type="button" class="btn btn-danger mb-2"> Buy for ${pizza.price}€</button>
+                                                                                                                                                                         <button type="button" class="btn btn-warning update-btn mb-2" id="${pizza.id}">Update Pizza</button>
+                                                                                                                                                                         <button type="button" class="btn btn-danger delete-btn" id="${pizza.id}">Delete Pizza</button>
+                                                                                                                                                                 </div>
+                                                                                                                                                             </div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>
+                                                                                                                                                         `
         }
 
         function deletePizza(pizzaId) {
@@ -122,9 +139,27 @@
                 CategoryId: 2
             }
 
-            axios.post('/api/Pizzas/create', pizzaData);
+            axios.post('/api/Pizzas/create', pizzaData)
+                .then((res) => {
+                    loadAllPizzas();
+                });
 
             loadAllPizzas();
+        }
+
+        function updatePizza(pizzaId) {
+            const data = {
+                id: pizzaId,
+                Name: "Pizza Edit Axios",
+                PhotoUrl: "https://th.bing.com/th/id/R.23c7f2098e23c881354adc623cb4905e?rik=cX7WzKaxSdKJcw&pid=ImgRaw&r=0",
+                Description: "Questa pizza è stata modificata con axios",
+                Price: 30
+            }
+
+            axios.put('/api/Pizzas/update/' + pizzaId, data)
+                .then((res) => {
+                    loadAllPizzas();
+                });
         }
     </script>
 }
