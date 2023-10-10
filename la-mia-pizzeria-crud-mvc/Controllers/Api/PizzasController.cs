@@ -29,7 +29,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
         {
             if (searchText == null)
             {
-                return BadRequest(new { Message = "Invalid search text" });
+                return Ok(new { Message = "Empty text" }); ;
             }
 
             List<Pizza> foundedPizzas = _myDatabase.Pizzas.Where(pizza => pizza.Name.ToLower().Contains(searchText.ToLower())).ToList();
@@ -102,7 +102,7 @@ namespace la_mia_pizzeria_crud_mvc.Controllers.Api
                         pizzaToUpdate.Ingredients = new List<Ingredient>();
                     }
 
-                    foreach(Ingredient ingredient in updatedPizzaData.Ingredients)
+                    foreach (Ingredient ingredient in updatedPizzaData.Ingredients)
                     {
                         pizzaToUpdate.Ingredients.Add(ingredient);
                     }

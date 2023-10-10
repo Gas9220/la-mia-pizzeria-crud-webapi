@@ -4,35 +4,79 @@
 }
 
 <h1>Choose a pizza</h1>
+<div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Search for a pizza.." id="pizza-input">
+    <button class="btn bg-danger text-white" type="button" id="search-btn">Search</button>
+</div>
 <div class="row mt-2" id="pizzas-container"></div>
+<div id="no-results" class="d-none">No pizza founded...</div>
 
 @section Scripts {
     <script type="text/javascript">
 
         let pizzasContainer = document.getElementById("pizzas-container");
+        let noResults = document.getElementById("no-results");
+        let searchButton = document.getElementById("search-btn");
+        let pizzaInput = document.getElementById("pizza-input")
+
         loadAllPizzas();
+
+        searchButton.addEventListener("click", function () { searchPizzaByName(pizzaInput.value) });
 
         function loadAllPizzas() {
             axios.get('/api/Pizzas/all')
                 .then((res) => {
+                    pizzasContainer.innerHTML = ``;
                     res.data.forEach(pizza => {
-                        console.log(pizza);
-                        pizzasContainer.innerHTML +=
-                            `
-                                    <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
-                                        <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
-                                            <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
-                                                <div class="card-body">
-                                                    <h5 class="card-title" > ${pizza.name}</h5>
-                                                    <p class="card-text" > ${pizza.description}</p>
-                                                    <a href = "#" class="btn btn-danger" > Buy for ${pizza.price}€</a>
-                                                </div>
-                                        </div>
-                                     </div>
-                             `
-
+                        if (res.data.lenght === 0) {
+                            pizzasContainer.classList.add("d-none");
+                            noResults.classList.remove("d-none");
+                        } else {
+                            reloadInterface(pizza);
+                        }
                     });
-                })
+                });
+        }
+
+        function searchPizzaByName(searchText) {
+            console.log(searchText)
+            axios.get('/api/Pizzas/byName', {
+                params: {
+                    searchText: searchText
+                }
+            }).then((res) => {
+                console.log(res.data.length)
+                if (searchText === "") {
+                    pizzasContainer.classList.remove("d-none");
+                    noResults.classList.add("d-none");
+                    loadAllPizzas();
+                }
+                else if (res.data.length == 0) {
+                    pizzasContainer.classList.add("d-none");
+                    noResults.classList.remove("d-none");
+                } else {
+                    pizzasContainer.innerHTML = ``;
+                    res.data.forEach(pizza => {
+                        reloadInterface(pizza);
+                    });
+                }
+            });
+        }
+
+        function reloadInterface(pizza) {
+            pizzasContainer.innerHTML +=
+                `
+                                                                                        <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
+                                                                                           <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
+                                                                                             <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
+                                                                                             <div class="card-body">
+                                                                                                <h5 class="card-title" > ${pizza.name}</h5>
+                                                                                                 <p class="card-text" > ${pizza.description}</p>
+                                                                                                  <a href = "#" class="btn btn-danger" > Buy for ${pizza.price}€</a>
+                                                                                             </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                         `
         }
     </script>
 }
