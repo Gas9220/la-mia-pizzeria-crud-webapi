@@ -17,7 +17,7 @@
         let pizzasContainer = document.getElementById("pizzas-container");
         let noResults = document.getElementById("no-results");
         let searchButton = document.getElementById("search-btn");
-        let pizzaInput = document.getElementById("pizza-input")
+        let pizzaInput = document.getElementById("pizza-input");
 
         loadAllPizzas();
 
@@ -34,12 +34,20 @@
                         } else {
                             reloadInterface(pizza);
                         }
+
                     });
+
+                    let deleteBtns = document.querySelectorAll(".delete-btn");
+                    for (var i = 0; i < deleteBtns.length; i++) {
+                        let id = deleteBtns[i].id;
+                        deleteBtns[i].addEventListener('click', function () {
+                            deletePizza(id);
+                        })
+                    }
                 });
         }
 
         function searchPizzaByName(searchText) {
-            console.log(searchText)
             axios.get('/api/Pizzas/byName', {
                 params: {
                     searchText: searchText
@@ -60,23 +68,44 @@
                         reloadInterface(pizza);
                     });
                 }
+
+                console.log(deleteBtns);
+                let deleteBtns = document.querySelectorAll(".delete-btn");
+
+                for (var i = 0; i < deleteBtns.length; i++) {
+                    console.log("Eseguito")
+
+                    deleteBtns[i].addEventListener("click", function () {
+                        console.log(deleteBtns[i])
+                        deletePizza(deleteBtns[i].id)
+                    });
+                }
             });
         }
 
         function reloadInterface(pizza) {
             pizzasContainer.innerHTML +=
                 `
-                                                                                        <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
-                                                                                           <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
-                                                                                             <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
-                                                                                             <div class="card-body">
-                                                                                                <h5 class="card-title" > ${pizza.name}</h5>
-                                                                                                 <p class="card-text" > ${pizza.description}</p>
-                                                                                                  <a href = "#" class="btn btn-danger" > Buy for ${pizza.price}€</a>
-                                                                                             </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                         `
+                                                                                                                <div class="col-lg-2 col-sm-6 col-md-4 d-flex justify-content-center mb-3" >
+                                                                                                                   <div class="card h-100 border-5 border-danger" style = "width: 18rem;" >
+                                                                                                                     <img src="${pizza.photoUrl}" class="card-img-top" alt = "..." >
+                                                                                                                     <div class="card-body">
+                                                                                                                        <h5 class="card-title" > ${pizza.name}</h5>
+                                                                                                                         <p class="card-text" > ${pizza.description}</p>
+                                                                                                                         <a href = "#" class="btn btn-danger"> Buy for ${pizza.price}€</a>
+                                                                                                                         <button type="button" class="btn btn-danger delete-btn" id="${pizza.id}">Delete Pizza</button>
+                                                                                                                     </div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                 `
+        }
+
+        function deletePizza(pizzaId) {
+            axios.delete('/api/Pizzas/delete/' + pizzaId)
+                .then((res) => {
+                    console.log(pizzaId)
+                    loadAllPizzas();
+                });
         }
     </script>
 }
